@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, StatusBar } from 'react-native';
 import 'firebase/auth';
 import firebase from './src/utils/firebase';
+import Auth from './src/components/Auth';
 
 export default function App() {
 
@@ -16,10 +17,21 @@ export default function App() {
   if (user === undefined) return null;
 
   return (
-    <View>
-      <SafeAreaView>
-        {user ? <Text>Estas logueado</Text> : <Text>No estas logueado</Text>}
+    <>
+      <StatusBar style={styles.barStyle} />
+      <SafeAreaView style={styles.background}>
+        {user ? <Text>Estas logueado</Text> : <Auth />}
       </SafeAreaView>
-    </View>
+    </>
   )
 }
+
+const styles = StyleSheet.create({
+  barStyle: {
+    color: '#ff00'
+  },
+  background: {
+    backgroundColor: '#15212b',
+    height: '100%'
+  }
+})
