@@ -18,7 +18,7 @@ export default function App() {
 
   return (
     <>
-      <StatusBar style={styles.barStyle} />
+      <StatusBar style={styles.barStyle} barStyle='light-content'/>
       <SafeAreaView style={styles.background}>
         {user ? <Text>Estas logueado</Text> : <Auth />}
       </SafeAreaView>
