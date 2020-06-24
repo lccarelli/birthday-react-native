@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, TextInput, View } from 'react-native'
-import { validateEmail } from '../components/Validations';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, TextInput, View } from 'react-native';
+import firebase from '../utils/firebase';
+import { validateEmail } from '../utils/validations';
 
 export default function RegisterForm(props) {
     const { changeForm } = props;
@@ -13,23 +14,42 @@ export default function RegisterForm(props) {
             if (!formData.email) errors.email = true;
             if (!formData.password) errors.password = true;
             if (!formData.repeatPassword) errors.repeatPassword = true;
-        }
-        else if (!validateEmail(formData.email)) {
+            console.log('email -> ', formData.email);
+        } if (!validateEmail(formData.email)) {
+            console.log('validateEmail -> ', validateEmail());
             errors.email = true;
         }
         else if (formData.password != formData.repeatPassword) {
             errors.password = true;
             errors.repeatPassword = true;
+        } else if (formData.password.length < 6) {
+            errors.password = true;
+            errors.repeatPassword = true;
+        } else {
+            firebase
+                .auth()
+                .createUserWithEmailAndPassword(formData.email, formData.password)
+                .then(() => {
+                    console.log('cuenta creada firebase')
+                }).catch(() => {
+                    setFormError({
+                        email: true,
+                        password: true,
+                        repeatPassword: true
+                    })
+                });
+            console.log('formulario correcto');
         }
         setFormError(errors);
         console.log('ERRORS-> ', errors);
     }
+
     return (
         <>
             <TextInput
+                style={[styles.input, formError.email && styles.error]}
                 placeholder='Correo electrónico'
                 placeholderTextColor='#969696'
-                style={[styles.input, formError.email && styles.error]}
                 onChange={(e) => setFormData({ ...formData, email: e.nativeEvent.text })}
             />
             <TextInput
